@@ -31,11 +31,11 @@ const Popular = () => {
         <h3>Popular Picks</h3>
         <Splide
           options={{
-            perPage: 4,
+            perPage: 2,
             arrows: false,
             pagination: false,
             drag: "free",
-            gap: "5rem",
+            gap: "1.5rem",
           }}
         >
           {popular.map((item) => {
@@ -61,7 +61,7 @@ const Wrapper = styled.div`
 `;
 
 const Card = styled.div`
-  min-height: 25rem;
+  min-height: 15rem;
   border-radius: 2rem;
   overflow: hidden;
   position: relative;
