@@ -27,7 +27,7 @@ function Cuisine() {
         const recipe = item.recipe;
         return (
           <Card key={recipe.uri}>
-            <Link to={`/recipe/${recipe.uri}`}>
+            <Link to={`/recipe/${encodeURIComponent(recipe.uri)}`}>
               <img src={recipe.image} alt={recipe.label} />
               <h4>{recipe.label}</h4>
             </Link>
