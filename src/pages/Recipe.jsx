@@ -7,17 +7,23 @@ function Recipe() {
   const encodedUri = encodeURIComponent(uri);
 
   const [details, setDetails] = useState({});
-  const [activeTab, setActiveTab] = useState("instructions");
+  const [activeTab, setActiveTab] = useState("ingredients");
 
   useEffect(() => {
-    const fetchDetails = async () => {
-      const data = await fetch(
-        `https://api.edamam.com/api/recipes/v2/by-uri?type=public&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_API_KEY}&uri=${encodedUri}`
-      );
-      const detailData = await data.json();
-      setDetails(detailData.hits[0].recipe);
+    const fetchDetails = async (encodedUri) => {
+      const recipe = localStorage.getItem("recipe");
+      if (recipe) {
+        setDetails(JSON.parse(recipe));
+      } else {
+        const data = await fetch(
+          `https://api.edamam.com/api/recipes/v2/by-uri?type=public&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_API_KEY}&uri=${encodedUri}`
+        );
+        const detailData = await data.json();
+        console.log(detailData);
+        setDetails(detailData.hits[0].recipe);
+      }
     };
-    fetchDetails();
+    fetchDetails(encodedUri);
   }, [encodedUri]);
 
   return (
@@ -27,18 +33,43 @@ function Recipe() {
         <img src={details.image} alt={details.label} />
       </div>
       <Info>
-        <Button
-          className={activeTab === "instructions" ? "active" : ""}
-          onClick={() => setActiveTab("instructions")}
-        >
-          Instructions
-        </Button>
+        <h3>{details.cuisineType}</h3>
+        <p>Calories: {details.calories}</p>
         <Button
           className={activeTab === "ingredients" ? "active" : ""}
           onClick={() => setActiveTab("ingredients")}
         >
           Ingredients
         </Button>
+        <Button
+          className={activeTab === "nutrition" ? "active" : ""}
+          onClick={() => setActiveTab("nutrition")}
+        >
+          Nutrition
+        </Button>
+        {activeTab === "ingredients" && (
+          <div>
+            <ul>
+              {details.ingredientLines.map((item) => {
+                return <li key={item}>{item}</li>;
+              })}
+            </ul>
+          </div>
+        )}
+        {activeTab === "nutrition" && (
+          <div>
+            <ul>
+              {details.totalNutrients.map((item) => {
+                return (
+                  <li key={item}>
+                    {item.label}: {item.quantity}
+                    {item.unit}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
       </Info>
     </DetailWrapper>
   );
@@ -58,6 +89,10 @@ const DetailWrapper = styled.div`
     margin-bottom: 2rem;
   }
 
+  p {
+    margin-bottom: 2rem;
+  }
+
   li {
     font-size: 1.2rem;
     line-height: 2.5;
@@ -65,6 +100,7 @@ const DetailWrapper = styled.div`
 
   ul {
     margin-top: 2rem;
+    margin-left: 1rem;
   }
 `;
 
