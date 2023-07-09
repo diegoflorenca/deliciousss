@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 function SearchResults() {
@@ -24,8 +24,10 @@ function SearchResults() {
         const recipe = item.recipe;
         return (
           <Card key={recipe.uri}>
-            <img src={recipe.image} alt={recipe.label} />
-            <h4>{recipe.label}</h4>
+            <Link to={`/recipe/${encodeURIComponent(recipe.uri)}`}>
+              <img src={recipe.image} alt={recipe.label} />
+              <h4>{recipe.label}</h4>
+            </Link>
           </Card>
         );
       })}
