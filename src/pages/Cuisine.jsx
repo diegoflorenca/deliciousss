@@ -7,17 +7,16 @@ function Cuisine() {
   const [recipes, setRecipes] = useState([]);
   const { type } = useParams();
 
-  const getCuisine = async (type) => {
-    const data = await fetch(
-      `https://api.edamam.com/api/recipes/v2?type=public&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_API_KEY}&cuisineType=${type}&random=true`
-    );
-
-    const recipes = await data.json();
-    console.log(recipes);
-    setRecipes(recipes.hits);
-  };
-
   useEffect(() => {
+    const getCuisine = async (type) => {
+      const data = await fetch(
+        `https://api.edamam.com/api/recipes/v2?type=public&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_API_KEY}&cuisineType=${type}&random=true`
+      );
+
+      const recipes = await data.json();
+      console.log(recipes);
+      setRecipes(recipes.hits);
+    };
     getCuisine(type);
   }, [type]);
 

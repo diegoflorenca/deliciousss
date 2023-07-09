@@ -8,24 +8,24 @@ const Veggie = () => {
   const [veggie, setVeggie] = useState([]);
 
   useEffect(() => {
+    const getVeggie = async () => {
+      // check if there is recipes on the local storage before fetching new ones
+      const recipes = localStorage.getItem("veggie");
+      if (recipes) {
+        setVeggie(JSON.parse(recipes));
+      } else {
+        // TODO: add try catch block here
+        const api = await fetch(
+          `https://api.edamam.com/api/recipes/v2?type=public&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_API_KEY}&health=vegetarian&random=true`
+        );
+        const data = await api.json();
+        localStorage.setItem("veggie", JSON.stringify(data.hits));
+        setVeggie(data.hits);
+      }
+    };
     getVeggie();
   }, []);
 
-  const getVeggie = async () => {
-    // check if there is recipes on the local storage before fetching new ones
-    const recipes = localStorage.getItem("veggie");
-    if (recipes) {
-      setVeggie(JSON.parse(recipes));
-    } else {
-      // TODO: add try catch block here
-      const api = await fetch(
-        `https://api.edamam.com/api/recipes/v2?type=public&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_API_KEY}&health=vegetarian&random=true`
-      );
-      const data = await api.json();
-      localStorage.setItem("veggie", JSON.stringify(data.hits));
-      setVeggie(data.hits);
-    }
-  };
   return (
     <div>
       <Wrapper>
